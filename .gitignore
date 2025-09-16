@@ -1,0 +1,50 @@
+# Maven/Gradle build
+/target/
+/build/
+/.gradle/
+
+# IDEs and editors
+/.idea/
+*.iml
+*.ipr
+*.iws
+/.classpath
+/.project
+/.settings/
+/.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Spring Boot specific
+spring.log
+
+# Test outputs
+/test-output/
+/surefire-reports/
+/failsafe-reports/
+
+# Local environment configs
+application-local.yml
+application-*.local.yml
+.env
+
+# Generated datasets and exports
+build/datasets/
+
+# Temporary files
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# Coverage reports
+/coverage/
+/.jacoco/
+
+# Node modules (if frontend bundled)
+node_modules/

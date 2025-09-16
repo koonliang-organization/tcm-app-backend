@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/tcm
+    username: tcm
+    password: tcm
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+  flyway:
+    enabled: false
+
+logging:
+  level:
+    root: INFO
+    com.tcm.backend: DEBUG
+
+publisher:
+  storage:
+    local-directory: build/datasets
+  min-app-version: 1.0.0
