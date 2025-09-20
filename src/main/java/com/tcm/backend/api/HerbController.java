@@ -23,8 +23,10 @@ public class HerbController {
         try {
             Page<HerbDto> herbs = herbService.listHerbs(pageable);
             return ResponseEntity.ok(ApiResponse.success("Herbs retrieved", herbs));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Invalid sort parameter: " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to retrieve herbs"));
+            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to retrieve herbs: " + e.getMessage()));
         }
     }
 

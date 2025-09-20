@@ -2,6 +2,7 @@ package com.tcm.backend.exception;
 
 import com.tcm.backend.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -24,6 +25,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleIllegalArgumentException(IllegalArgumentException ex) {
         log.warn("Illegal argument", ex);
         return errorResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ApiResponse<?>> handlePropertyReferenceException(PropertyReferenceException ex) {
+        log.warn("Invalid property reference", ex);
+        return errorResponseEntity("Invalid sort property: " + ex.getPropertyName(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ MethodArgumentNotValidException.class, BindException.class })
