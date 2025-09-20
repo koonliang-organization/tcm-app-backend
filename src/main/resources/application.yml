@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/tcm
-    username: tcm
-    password: tcm
+    url: jdbc:mysql://localhost:3306/tcm_recipes
+    username: admin
+    password: pass1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -12,6 +12,7 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
     open-in-view: false
+    show-sql: true
   flyway:
     enabled: false
 

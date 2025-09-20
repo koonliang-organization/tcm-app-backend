@@ -1,9 +1,9 @@
 package com.tcm.backend.service;
 
 import com.tcm.backend.domain.Herb;
-import com.tcm.backend.dto.HerbDto;
+import com.tcm.backend.dto.*;
 import com.tcm.backend.mapper.HerbMapper;
-import com.tcm.backend.repository.HerbRepository;
+import com.tcm.backend.repository.*;
 import com.tcm.backend.service.impl.HerbServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,9 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,6 +27,21 @@ class HerbServiceImplTest {
 
     @Mock
     private HerbRepository herbRepository;
+
+    @Mock
+    private HerbFlavorRepository herbFlavorRepository;
+
+    @Mock
+    private HerbFormulaRepository herbFormulaRepository;
+
+    @Mock
+    private HerbImageRepository herbImageRepository;
+
+    @Mock
+    private HerbIndicationRepository herbIndicationRepository;
+
+    @Mock
+    private HerbMeridianRepository herbMeridianRepository;
 
     @Mock
     private HerbMapper herbMapper;
@@ -41,15 +56,21 @@ class HerbServiceImplTest {
 
     @Test
     void createHerbPersistsEntity() {
-        HerbDto request = new HerbDto(null, "Radix", "bai zhu", "白术", "白術", null, null, null);
+        HerbDto request = new HerbDto(null, "https://example.com/herb1", "白术", "bai zhu", 
+                "白术描述", "Description", "Appearance", "property",
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
+                new ArrayList<>(), new ArrayList<>());
         Herb entity = new Herb();
         Herb saved = new Herb();
-        saved.setId(UUID.randomUUID());
+        saved.setId(1);
 
-        when(herbRepository.findByLatinNameIgnoreCase("Radix")).thenReturn(Optional.empty());
+        when(herbRepository.findBySourceUrl("https://example.com/herb1")).thenReturn(Optional.empty());
         when(herbMapper.toEntity(request)).thenReturn(entity);
         when(herbRepository.save(entity)).thenReturn(saved);
-        when(herbMapper.toDto(saved)).thenReturn(new HerbDto(saved.getId(), "Radix", "bai zhu", "白术", "白術", null, null, null));
+        when(herbMapper.toDto(saved)).thenReturn(new HerbDto(saved.getId(), "https://example.com/herb1", 
+                "白术", "bai zhu", "白术描述", "Description", "Appearance", "property",
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
+                new ArrayList<>(), new ArrayList<>()));
 
         HerbDto result = herbService.createHerb(request);
 
@@ -60,10 +81,13 @@ class HerbServiceImplTest {
     @Test
     void listHerbsReturnsMappedDtos() {
         Herb herb = new Herb();
-        herb.setId(UUID.randomUUID());
+        herb.setId(1);
         Page<Herb> herbPage = new PageImpl<>(List.of(herb));
         when(herbRepository.findAll(PageRequest.of(0, 10))).thenReturn(herbPage);
-        HerbDto dto = new HerbDto(herb.getId(), "Radix", "bai zhu", "白术", "白術", null, null, null);
+        HerbDto dto = new HerbDto(herb.getId(), "https://example.com/herb1", "白术", "bai zhu", 
+                "白术描述", "Description", "Appearance", "property",
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
+                new ArrayList<>(), new ArrayList<>());
         when(herbMapper.toDto(herb)).thenReturn(dto);
 
         Page<HerbDto> result = herbService.listHerbs(PageRequest.of(0, 10));
@@ -73,7 +97,7 @@ class HerbServiceImplTest {
 
     @Test
     void deleteHerbThrowsWhenNotFound() {
-        UUID herbId = UUID.randomUUID();
+        Integer herbId = 1;
         when(herbRepository.findById(herbId)).thenReturn(Optional.empty());
         assertThrows(IllegalArgumentException.class, () -> herbService.deleteHerb(herbId));
     }

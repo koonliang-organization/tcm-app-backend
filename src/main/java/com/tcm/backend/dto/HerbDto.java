@@ -3,19 +3,24 @@ package com.tcm.backend.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.util.UUID;
+import java.util.List;
 
 public record HerbDto(
-        UUID id,
-        @NotBlank @Size(max = 255) String latinName,
-        @NotBlank @Size(max = 255) String pinyinName,
-        @NotBlank @Size(max = 255) String chineseNameSimplified,
-        @NotBlank @Size(max = 255) String chineseNameTraditional,
-        @Size(max = 2000) String properties,
-        @Size(max = 2000) String indications,
-        @Size(max = 2000) String precautions
+        Integer id,
+        @NotBlank @Size(max = 512) String sourceUrl,
+        @Size(max = 255) String nameZh,
+        @Size(max = 255) String namePinyin,
+        String descZh,
+        String descEn,
+        String appearance,
+        @Size(max = 64) String property,
+        List<HerbFlavorDto> flavors,
+        List<HerbFormulaDto> formulas,
+        List<HerbImageDto> images,
+        List<HerbIndicationDto> indications,
+        List<HerbMeridianDto> meridians
 ) {
     public HerbDto {
-        // no extra validation beyond annotations for now
+        // Validation handled by annotations
     }
 }

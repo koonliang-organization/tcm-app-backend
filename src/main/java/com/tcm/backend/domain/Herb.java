@@ -1,59 +1,64 @@
 package com.tcm.backend.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.util.UUID;
+import java.util.List;
 
 @Data
 @Entity
-@Table(name = "herb")
+@Table(name = "herbs", 
+       uniqueConstraints = @UniqueConstraint(name = "uniq_source_url", 
+                                           columnNames = {"source_url"}))
 public class Herb extends AbstractAuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
-    @Version
-    private Long version;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @NotBlank
+    @Size(max = 512)
+    @Column(name = "source_url", nullable = false)
+    private String sourceUrl;
+
     @Size(max = 255)
-    @Column(name = "latin_name", nullable = false)
-    private String latinName;
+    @Column(name = "name_zh")
+    private String nameZh;
 
-    @NotBlank
     @Size(max = 255)
-    @Column(name = "pinyin_name", nullable = false)
-    private String pinyinName;
+    @Column(name = "name_pinyin")
+    private String namePinyin;
 
-    @NotBlank
-    @Size(max = 255)
-    @Column(name = "chinese_name_simplified", nullable = false)
-    private String chineseNameSimplified;
+    @Lob
+    @Column(name = "desc_zh", columnDefinition = "LONGTEXT")
+    private String descZh;
 
-    @NotBlank
-    @Size(max = 255)
-    @Column(name = "chinese_name_traditional", nullable = false)
-    private String chineseNameTraditional;
+    @Lob
+    @Column(name = "desc_en", columnDefinition = "LONGTEXT")
+    private String descEn;
 
-    @Size(max = 2000)
-    @Column(name = "properties")
-    private String properties;
+    @Lob
+    @Column(name = "appearance", columnDefinition = "LONGTEXT")
+    private String appearance;
 
-    @Size(max = 2000)
-    @Column(name = "indications")
-    private String indications;
+    @Size(max = 64)
+    @Column(name = "property")
+    private String property;
 
-    @Size(max = 2000)
-    @Column(name = "precautions")
-    private String precautions;
+    @OneToMany(mappedBy = "herb", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<HerbFlavor> flavors;
+
+    @OneToMany(mappedBy = "herb", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<HerbFormula> formulas;
+
+    @OneToMany(mappedBy = "herb", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<HerbImage> images;
+
+    @OneToMany(mappedBy = "herb", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<HerbIndication> indications;
+
+    @OneToMany(mappedBy = "herb", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<HerbMeridian> meridians;
 }
