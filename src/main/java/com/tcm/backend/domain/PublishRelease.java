@@ -12,11 +12,13 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "publish_release")
 public class PublishRelease extends AbstractAuditableEntity {
