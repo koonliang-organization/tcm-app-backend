@@ -6,6 +6,8 @@ import com.tcm.backend.mapper.HerbMapper;
 import com.tcm.backend.repository.*;
 import com.tcm.backend.service.HerbService;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,8 @@ import java.util.List;
 
 @Service
 public class HerbServiceImpl implements HerbService {
+
+    private static final Logger logger = LoggerFactory.getLogger(HerbServiceImpl.class);
 
     @Autowired
     private HerbRepository herbRepository;
@@ -92,8 +96,17 @@ public class HerbServiceImpl implements HerbService {
     @Override
     @Transactional
     public List<HerbDto> searchHerbsByName(String searchTerm) {
-        List<Herb> herbs = herbRepository.findByNameContaining(searchTerm);
-        return herbs.stream().map(herbMapper::toDto).toList();
+        logger.info("Searching herbs by name with term: '{}'", searchTerm);
+        try {
+            List<Herb> herbs = herbRepository.findByNameContaining(searchTerm);
+            logger.info("Repository search completed, found {} herbs", herbs.size());
+            List<HerbDto> result = herbs.stream().map(herbMapper::toDto).toList();
+            logger.info("Mapping to DTOs completed, returning {} herbs", result.size());
+            return result;
+        } catch (Exception e) {
+            logger.error("Error in searchHerbsByName: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.tcm.backend.api;
 import com.tcm.backend.dto.*;
 import com.tcm.backend.service.HerbService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/herbs")
 public class HerbController {
+
+    private static final Logger logger = LoggerFactory.getLogger(HerbController.class);
 
     @Autowired
     private HerbService herbService;
@@ -41,7 +45,7 @@ public class HerbController {
     }
 
     @GetMapping("/by-source-url")
-    public ResponseEntity<ApiResponse<HerbDto>> getHerbBySourceUrl(@RequestParam String sourceUrl) {
+    public ResponseEntity<ApiResponse<HerbDto>> getHerbBySourceUrl(@RequestParam("sourceUrl") String sourceUrl) {
         try {
             HerbDto herb = herbService.getHerbBySourceUrl(sourceUrl);
             return ResponseEntity.ok(ApiResponse.success("Herb retrieved", herb));
@@ -51,12 +55,21 @@ public class HerbController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<HerbDto>>> searchHerbs(@RequestParam String searchTerm) {
+    public ResponseEntity<ApiResponse<List<HerbDto>>> searchHerbs(@RequestParam("searchTerm") String searchTerm) {
+        logger.info("Search endpoint called with searchTerm: '{}'", searchTerm);
         try {
+            if (searchTerm == null || searchTerm.trim().isEmpty()) {
+                logger.warn("Search term is null or empty");
+                return ResponseEntity.badRequest().body(ApiResponse.error("Search term cannot be empty"));
+            }
+
+            logger.info("Calling herbService.searchHerbsByName with term: '{}'", searchTerm);
             List<HerbDto> herbs = herbService.searchHerbsByName(searchTerm);
+            logger.info("Search completed successfully, found {} herbs", herbs.size());
             return ResponseEntity.ok(ApiResponse.success("Search results retrieved", herbs));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error("Search failed"));
+            logger.error("Search failed with error: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(ApiResponse.error("Search failed: " + e.getMessage()));
         }
     }
 

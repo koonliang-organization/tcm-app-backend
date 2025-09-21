@@ -24,6 +24,6 @@ public interface HerbRepository extends JpaRepository<Herb, Integer> {
     @EntityGraph(attributePaths = {"flavors", "formulas", "images", "indications", "meridians"})
     Optional<Herb> findByNamePinyinIgnoreCase(String namePinyin);
 
-    @Query("SELECT h FROM Herb h LEFT JOIN FETCH h.flavors LEFT JOIN FETCH h.formulas LEFT JOIN FETCH h.images LEFT JOIN FETCH h.indications LEFT JOIN FETCH h.meridians WHERE h.nameZh LIKE %:searchTerm% OR h.namePinyin LIKE %:searchTerm%")
+    @Query("SELECT DISTINCT h FROM Herb h WHERE h.nameZh LIKE %:searchTerm% OR h.namePinyin LIKE %:searchTerm%")
     java.util.List<Herb> findByNameContaining(@Param("searchTerm") String searchTerm);
 }
