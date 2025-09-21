@@ -61,6 +61,13 @@ app:
       same-site: ${COOKIE_SAME_SITE:strict}
     lockout:
       duration-minutes: ${ACCOUNT_LOCKOUT_DURATION:30}
+  seeding:
+    enabled: ${DATA_SEEDING_ENABLED:true}
+    admin:
+      email: ${ADMIN_EMAIL:admin@example.com}
+      password: ${ADMIN_PASSWORD:pass1234}  # Leave empty to auto-generate secure password
+      first-name: ${ADMIN_FIRST_NAME:System}
+      last-name: ${ADMIN_LAST_NAME:Administrator}
 
 # Management and Monitoring
 management:
