@@ -22,7 +22,7 @@ public interface AdminUserRepository extends JpaRepository<AdminUser, String> {
     @EntityGraph(attributePaths = {"roles", "roles.permissions"})
     Optional<AdminUser> findByEmailAndIsEnabledTrue(String email);
 
-    @EntityGraph(attributePaths = {"roles"})
+    @EntityGraph(attributePaths = {"roles", "roles.permissions"})
     Optional<AdminUser> findByIdAndIsEnabledTrue(String id);
 
     boolean existsByEmail(String email);

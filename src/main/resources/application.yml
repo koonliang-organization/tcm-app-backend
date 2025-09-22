@@ -23,6 +23,11 @@ spring:
     show-sql: ${JPA_SHOW_SQL:false}
   flyway:
     enabled: ${FLYWAY_ENABLED:false}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
 
 logging:
   level:
