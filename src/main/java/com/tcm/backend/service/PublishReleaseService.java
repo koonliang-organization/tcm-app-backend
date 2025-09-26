@@ -4,15 +4,14 @@ import com.tcm.backend.dto.PublishReleaseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.UUID;
 
 public interface PublishReleaseService {
 
     PublishReleaseDto createDraft(String versionName);
 
-    PublishReleaseDto markReadyForReview(UUID releaseId);
+    PublishReleaseDto markReadyForReview(String releaseId);
 
-    PublishReleaseDto approveRelease(UUID releaseId, UUID approverId);
+    PublishReleaseDto approveRelease(String releaseId, String approverId);
 
     Page<PublishReleaseDto> listReleases(Pageable pageable);
 

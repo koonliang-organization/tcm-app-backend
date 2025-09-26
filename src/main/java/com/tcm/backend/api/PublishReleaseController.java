@@ -4,11 +4,15 @@ import com.tcm.backend.dto.ApiResponse;
 import com.tcm.backend.dto.PublishReleaseDto;
 import com.tcm.backend.service.DatasetPublisherService;
 import com.tcm.backend.service.PublishReleaseService;
+import com.tcm.backend.domain.AdminUser;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/publish/releases")
@@ -40,24 +43,30 @@ public class PublishReleaseController {
     }
 
     @PostMapping("/{id}/ready")
-    public ResponseEntity<ApiResponse<PublishReleaseDto>> markReady(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<PublishReleaseDto>> markReady(@PathVariable String id) {
         PublishReleaseDto ready = publishReleaseService.markReadyForReview(id);
         return ResponseEntity.ok(ApiResponse.success("Release marked ready", ready));
     }
 
     @PostMapping("/{id}/approve")
-    public ResponseEntity<ApiResponse<PublishReleaseDto>> approve(@PathVariable UUID id,
-                                                                   @RequestBody Map<String, String> payload) {
-        String approverId = payload.get("approverId");
-        if (approverId == null || approverId.isBlank()) {
-            throw new IllegalArgumentException("approverId is required");
+    @PreAuthorize("hasAuthority('PUBLISH_WRITE') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<PublishReleaseDto>> approve(@PathVariable String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof AdminUser)) {
+            throw new IllegalArgumentException("User not authenticated");
         }
-        PublishReleaseDto approved = publishReleaseService.approveRelease(id, UUID.fromString(approverId));
+
+        AdminUser currentUser = (AdminUser) authentication.getPrincipal();
+        String approverId = currentUser.getId();
+
+        PublishReleaseDto approved = publishReleaseService.approveRelease(id, approverId);
         return ResponseEntity.ok(ApiResponse.success("Release approved", approved));
     }
 
     @PostMapping("/{id}/publish")
-    public ResponseEntity<ApiResponse<Void>> publish(@PathVariable UUID id) {
+    @PreAuthorize("hasAuthority('PUBLISH_EXECUTE') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> publish(@PathVariable String id) {
         datasetPublisherService.publishRelease(id);
         return ResponseEntity.ok(ApiResponse.success("Release published", null));
     }

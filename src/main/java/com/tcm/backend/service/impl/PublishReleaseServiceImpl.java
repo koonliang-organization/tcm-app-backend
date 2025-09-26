@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Service
 public class PublishReleaseServiceImpl implements PublishReleaseService {
@@ -36,7 +35,7 @@ public class PublishReleaseServiceImpl implements PublishReleaseService {
 
     @Override
     @Transactional
-    public PublishReleaseDto markReadyForReview(UUID releaseId) {
+    public PublishReleaseDto markReadyForReview(String releaseId) {
         PublishRelease release = publishReleaseRepository.findById(releaseId)
                 .orElseThrow(() -> new IllegalArgumentException("Release not found"));
         release.setStatus(ReleaseStatus.READY_FOR_REVIEW);
@@ -46,7 +45,7 @@ public class PublishReleaseServiceImpl implements PublishReleaseService {
 
     @Override
     @Transactional
-    public PublishReleaseDto approveRelease(UUID releaseId, UUID approverId) {
+    public PublishReleaseDto approveRelease(String releaseId, String approverId) {
         PublishRelease release = publishReleaseRepository.findById(releaseId)
                 .orElseThrow(() -> new IllegalArgumentException("Release not found"));
         release.setStatus(ReleaseStatus.APPROVED);

@@ -6,10 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface PublishReleaseRepository extends JpaRepository<PublishRelease, UUID> {
+public interface PublishReleaseRepository extends JpaRepository<PublishRelease, String> {
 
     Optional<PublishRelease> findFirstByStatusOrderByCreatedAtDesc(ReleaseStatus status);
 }

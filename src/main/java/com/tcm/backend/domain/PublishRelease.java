@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.Instant;
-import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
@@ -24,8 +24,10 @@ import java.util.UUID;
 public class PublishRelease extends AbstractAuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", columnDefinition = "CHAR(36)")
+    private String id;
 
     @Version
     private Long version;
@@ -53,8 +55,8 @@ public class PublishRelease extends AbstractAuditableEntity {
     @Column(name = "approved_at")
     private Instant approvedAt;
 
-    @Column(name = "approved_by")
-    private UUID approvedBy;
+    @Column(name = "approved_by", columnDefinition = "CHAR(36)")
+    private String approvedBy;
 
     public enum ReleaseStatus {
         DRAFT,

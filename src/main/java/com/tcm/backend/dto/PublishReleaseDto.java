@@ -6,17 +6,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
-import java.util.UUID;
 
 public record PublishReleaseDto(
-        UUID id,
+        String id,
         @NotBlank @Size(max = 32) String versionName,
         @NotNull ReleaseStatus status,
         String manifestJson,
         String checksum,
         String storageUrl,
         Instant approvedAt,
-        UUID approvedBy
+        String approvedBy
 ) {
     public PublishReleaseDto {
         // canonical constructor for validation hooks if needed later

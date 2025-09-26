@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -37,7 +36,7 @@ public class DatasetPublisherServiceImpl implements DatasetPublisherService {
 
     @Override
     @Transactional
-    public void publishRelease(UUID releaseId) {
+    public void publishRelease(String releaseId) {
         PublishRelease release = publishReleaseRepository.findById(releaseId)
                 .orElseThrow(() -> new IllegalArgumentException("Release not found"));
         if (release.getStatus() != ReleaseStatus.APPROVED) {
